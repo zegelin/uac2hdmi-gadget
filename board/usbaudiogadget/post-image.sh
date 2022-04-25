@@ -1,0 +1,1 @@
+../../buildroot-2022.02/board/raspberrypi/post-image.sh
