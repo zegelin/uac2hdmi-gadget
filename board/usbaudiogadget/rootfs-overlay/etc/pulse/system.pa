@@ -1,0 +1,11 @@
+#!/usr/bin/pulseaudio -nF
+
+
+load-module module-alsa-sink device=hdmi:0,0
+load-module module-alsa-source device=hw:1,0
+
+load-module module-native-protocol-unix
+
+load-module module-always-sink
+
+load-module module-loopback source=alsa_input.hw_1_0 sink=alsa_output.hdmi_0_0

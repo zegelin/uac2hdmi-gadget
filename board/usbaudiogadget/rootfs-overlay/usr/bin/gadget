@@ -16,9 +16,8 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 
-ls /sys/class/udc
-ls /sys/kernel/config
-mount
+
+#echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
 
 # echo "Cleaning up existing gadget"
@@ -96,3 +95,11 @@ echo "Attaching gadget"
 ls /sys/class/udc/ > UDC
 
 echo "Done!"
+
+
+# add root to pulse-access
+sed -i '/pulse-access/ s/$/,root/' /etc/group
+
+sed -i 's/--disallow-module-loading//' /etc/init.d/S50pulseaudio
+
+setfacl -m 'g:pulse:rwx' /dev/snd/*

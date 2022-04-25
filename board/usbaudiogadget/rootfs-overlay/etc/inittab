@@ -33,7 +33,7 @@ null::sysinit:/bin/ln -sf /proc/self/fd/2 /dev/stderr
 
 # Put a getty on the serial port
 console::respawn:/bin/sh # GENERIC_SERIAL
-tty1::respawn:/bin/sh # HDMI console
+#tty1::respawn:/usr/bin/kmscube # HDMI console
 ttyGS0::respawn:/bin/sh
 
 # Stuff to do for the 3-finger salute
