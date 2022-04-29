@@ -8,4 +8,4 @@ load-module module-native-protocol-unix
 
 load-module module-always-sink
 
-load-module module-loopback source=alsa_input.hw_1_0 sink=alsa_output.hdmi_0_0
+load-module module-loopback source=alsa_input.hw_1_0 sink=alsa_output.hdmi_0_0 latency_msec=10

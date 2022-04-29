@@ -5,6 +5,7 @@ set -xeuo pipefail
 CONFIGFS=/sys/kernel/config/usb_gadget
 
 GADGET_NAME=gadget
+GADGET=$CONFIGFS/$GADGET_NAME
 LANGUAGE=0x409 # English
 MANUFACTURER="Zegelin"
 PRODUCT="USB Audio to HDMI Gadget"
@@ -15,30 +16,6 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-
-
-#echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-
-
-# echo "Cleaning up existing gadget"
-GADGET=$CONFIGFS/$GADGET_NAME
-
-
-
-# echo "Removing config-level functions"
-# find $GADGET/configs/*/* -maxdepth 0 -type l -exec rm {} \; || true
-# echo "Removing config-level strings"
-# find $GADGET/configs/*/strings/* -maxdepth 0 -type d -exec rmdir {} \; || true
-# echo "Removing config-level OS descriptors"
-# find $GADGET/os_desc/* -maxdepth 0 -type l -exec rm {} \; || true
-# echo "Removing gadget-level functions"
-# find $GADGET/functions/* -maxdepth 0 -type d -exec rmdir {} \; || true
-# echo "Removing gadget-level strings"
-# find $GADGET/strings/* -maxdepth 0 -type d -exec rmdir {} \; || true
-# echo "Removing gadget-level configs"
-# find $GADGET/configs/* -maxdepth 0 -type d -exec rmdir {} \; || true
-# echo "Removing gadget"
-# rmdir $GADGET || true
 
 
 echo "Creating gadget"
@@ -60,21 +37,14 @@ echo 0xEF > bDeviceClass
 echo 0x02 > bDeviceSubClass
 echo 0x01 > bDeviceProtocol
 
-# echo "Configuring OS descriptors"
+echo "Configuring OS descriptors"
 # # https://msdn.microsoft.com/en-us/library/hh881271.aspx
-# echo 1       > os_desc/use
-# echo 0xcd    > os_desc/b_vendor_code
-# echo MSFT100 > os_desc/qw_sign
+echo 1       > os_desc/use
+echo 0xcd    > os_desc/b_vendor_code
+echo MSFT100 > os_desc/qw_sign
 
-# echo "Creating RNDIS function"
-# mkdir functions/rndis.usb0
-# echo $HOST_ADDRESS > functions/rndis.usb0/host_addr
-# echo $DEV_ADDRESS  > functions/rndis.usb0/dev_addr
-# # https://msdn.microsoft.com/en-us/windows/hardware/gg463179.aspx
-# echo RNDIS   > functions/rndis.usb0/os_desc/interface.rndis/compatible_id
-# echo 5162001 > functions/rndis.usb0/os_desc/interface.rndis/sub_compatible_id
 
-echo "Creating Audio function"
+echo "Creating audio function"
 mkdir functions/uac2.usb0
 echo 0 > functions/uac2.usb0/p_chmask
 echo 48000 > functions/uac2.usb0/c_srate
@@ -100,6 +70,7 @@ echo "Done!"
 # add root to pulse-access
 sed -i '/pulse-access/ s/$/,root/' /etc/group
 
-sed -i 's/--disallow-module-loading//' /etc/init.d/S50pulseaudio
+#sed -i 's/--disallow-module-loading//' /etc/init.d/S50pulseaudio
 
+# let pulse access ALSA cards
 setfacl -m 'g:pulse:rwx' /dev/snd/*
