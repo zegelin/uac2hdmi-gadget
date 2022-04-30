@@ -1,0 +1,20 @@
+#!/bin/sh
+
+start() {
+	printf "Starting bootchime: "
+    /usr/bin/paplay /usr/share/sounds/boot.wav &
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+    ;;
+  *)
+	echo "Usage: $0 {start}"
+	exit 1
+esac
+
+exit $?

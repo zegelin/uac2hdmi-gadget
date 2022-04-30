@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -xeuo pipefail
+#!/bin/sh -xue
 
 CONFIGFS=/sys/kernel/config/usb_gadget
 
@@ -9,13 +7,6 @@ GADGET=$CONFIGFS/$GADGET_NAME
 LANGUAGE=0x409 # English
 MANUFACTURER="Zegelin"
 PRODUCT="USB Audio to HDMI Gadget"
-
-
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root"
-   exit 1
-fi
-
 
 
 echo "Creating gadget"
@@ -70,7 +61,8 @@ echo "Done!"
 # add root to pulse-access
 sed -i '/pulse-access/ s/$/,root/' /etc/group
 
-#sed -i 's/--disallow-module-loading//' /etc/init.d/S50pulseaudio
+# allow runtime loading of modules via pactl
+sed -i 's/--disallow-module-loading//' /etc/init.d/S50pulseaudio
 
 # let pulse access ALSA cards
 setfacl -m 'g:pulse:rwx' /dev/snd/*

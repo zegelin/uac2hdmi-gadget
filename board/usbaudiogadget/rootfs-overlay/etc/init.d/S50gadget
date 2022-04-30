@@ -1,0 +1,20 @@
+#!/bin/sh
+
+start() {
+	printf "Starting gadget: "
+    /usr/bin/gadget > /var/log/gadget.log 2>&1
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+    ;;
+  *)
+	echo "Usage: $0 {start|stop}"
+	exit 1
+esac
+
+exit $?
